@@ -1,11 +1,7 @@
 lang: c
 env:
-  matrix:
-  - secure: |-
-      OKG83uTOFHfHbxrd8nN5JRVLGirXL/Kjto6UBi0wLi7GpC452nL0P87XQlVI
-      +G27H0p38vbZ6WxHoLadu2dW+B4T/J5maPmSZPE4CZVbOORjAx/8fV3SYoBn
-      j12ZNEgORkOSqVvnDBxJLDhzwZeVwiFsJcJ9H5S+3PmYIZrX4C0=
-  - secure: E502IZED9dqcN+NdLf8pkQxGbB+k4nxekOjRba0Is6AnHbzRfqG+qh90PbcMFyxGzub8Akv8O3XoyfokPviqJA67ePdhFY6mSmz4jTTg29Dg41WVv1ljYOr+dwp52zTEN0mAOid9Dcz7Ifa5NDpVNExDuwiOgbp225HxqFY3K0A=
+  global:
+    secure: P1tohkXL6v/rXiJkjF3srKRB00t1YDHc/+UDNSrui3h+KdmVmFpMiYOd/uSNKLeMnTcvCt1ET4yxOQSh/sX6KZDvZQDC1K/+42NZPLvC65TJ5rOjM1++dRXh3NYEU83ShvbaaPTfAJuKdNcbEtxY9jysyOQ8OmfBryChzOAoka0=
 script: "./travis-ci.sh"
 notifications:
   irc:
