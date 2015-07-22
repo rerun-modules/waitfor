@@ -67,7 +67,7 @@ BIN=rerun.sh
 ./$BIN $MODULE
 
 # Upload and publish to bintray
-echo "Uploading $BIN to bintray: /${BINTRAY_ORG}/rerun-modules/${MODULE}/${VERSION}..."
+echo "Uploading $BIN archive to bintray: /${BINTRAY_ORG}/rerun-modules/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org ${BINTRAY_ORG}   --repo rerun-modules \
