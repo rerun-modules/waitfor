@@ -66,9 +66,11 @@ BIN=rerun.sh
 # Test the archive by making it do a command list.
 ./$BIN $MODULE
 
-echo >&2 "Build the rundeck plugins..."
-# Build a rundeck plugin
+
+# Build rundeck plugins
 #------------------------
+echo "Build the rundeck plugins..."
+
 $RERUN rundeck-plugin:remote-node-steps --name $MODULE --modules $MODULE --version ${VERSION}
 ZIP=./build/${MODULE}.zip
 [ ! -f $ZIP ] && {
@@ -78,7 +80,33 @@ ZIP=./build/${MODULE}.zip
     exit 1
 }
 
-echo >&2 "Upload the artifacts to bintray..."
+
+# Build a deb
+#-------------
+echo "Building deb package..."
+$RERUN stubbs:archive --modules $MODULE --format deb --version ${VERSION} --release ${RELEASE:=1}
+DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
+[ ! -f $DEB ] && {
+    echo >&2 "ERROR: $DEB file was not created."
+    files=( *.deb )
+    echo >&2 "ERROR: ${#files[*]} files matching .deb: ${files[*]}"
+    exit 1
+}
+
+
+# Build a rpm
+#-------------
+echo "Building rpm package..."
+$RERUN stubbs:archive --modules $MODULE --format rpm --version ${VERSION} --release ${RELEASE:=1}
+RPM=rerun-${MODULE}-${VERSION}-${RELEASE}.noarch.rpm
+[ ! -f $RPM ] && {
+    echo >&2 "ERROR: $RPM file was not created."
+    files=( *.rpm )
+    echo >&2 "ERROR: ${#files[*]} files matching .rpm: ${files[*]}"
+    exit 1
+}
+
+echo "Uploading the artifacts to bintray..."
 
 
 # Upload and publish to bintray
@@ -89,33 +117,6 @@ $RERUN bintray:package-upload \
     --package $MODULE      --version $VERSION \
     --file $BIN
 
-# Build a deb
-#-------------
-$RERUN stubbs:archive --modules $MODULE --format deb --version ${VERSION} --release ${RELEASE:=1}
-DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
-[ ! -f $DEB ] && {
-    echo >&2 "ERROR: $DEB file was not created."
-    files=( *.deb )
-    echo >&2 "ERROR: ${#files[*]} files matching .deb: ${files[*]}"
-    exit 1
-}
-echo "Uploading debian package $DEB to bintray: /${BINTRAY_ORG}/rerun-deb ..."
-$RERUN bintray:package-upload \
-    --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
-    --org ${BINTRAY_ORG}   --repo rerun-deb \
-    --package rerun-${MODULE}      --version $VERSION \
-    --file $DEB
-
-# Build a rpm
-#-------------
-$RERUN stubbs:archive --modules $MODULE --format rpm --version ${VERSION} --release ${RELEASE:=1}
-RPM=rerun-${MODULE}-${VERSION}-${RELEASE}.noarch.rpm
-[ ! -f $RPM ] && {
-    echo >&2 "ERROR: $RPM file was not created."
-    files=( *.rpm )
-    echo >&2 "ERROR: ${#files[*]} files matching .rpm: ${files[*]}"
-    exit 1
-}
 
 echo "Uploading rpm package $RPM to bintray: /${BINTRAY_ORG}/rerun-rpm ..."
 $RERUN bintray:package-upload \
@@ -124,7 +125,12 @@ $RERUN bintray:package-upload \
     --package rerun-${MODULE}      --version $VERSION \
     --file $RPM
 
-
+echo "Uploading debian package $DEB to bintray: /${BINTRAY_ORG}/rerun-deb ..."
+$RERUN bintray:package-upload \
+    --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
+    --org ${BINTRAY_ORG}   --repo rerun-deb \
+    --package rerun-${MODULE}      --version $VERSION \
+    --file $DEB
 
 echo "Uploading zip package $ZIP to bintray: /rundeck-plugins/rerun-remote-node-steps ..."
 $RERUN bintray:package-upload \
