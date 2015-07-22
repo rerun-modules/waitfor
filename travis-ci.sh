@@ -7,7 +7,7 @@ set -eu
 # The module we're building.
 MODULE=waitfor
 # The bintray info.
-BINTRAY_USER=ahonor BINTRAY_ORG=rundeck-plugins 
+BINTRAY_USER=ahonor BINTRAY_ORG=rerun
 
 # Prepare.
 # --------
@@ -66,6 +66,21 @@ BIN=rerun.sh
 # Test the archive by making it do a command list.
 ./$BIN $MODULE
 
+echo >&2 "Build the rundeck plugins..."
+# Build a rundeck plugin
+#------------------------
+$RERUN rundeck-plugin:remote-node-steps --name $MODULE --modules $MODULE --version ${VERSION}
+ZIP=./build/${MODULE}.zip
+[ ! -f $ZIP ] && {
+    echo >&2 "ERROR: $ZIP file was not created."
+    files=( *.zip )
+    echo >&2 "ERROR: ${#files[*]} files matching .zip: ${files[*]}"
+    exit 1
+}
+
+echo >&2 "Upload the artifacts to bintray..."
+
+
 # Upload and publish to bintray
 echo "Uploading $BIN archive to bintray: /${BINTRAY_ORG}/rerun-modules/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
@@ -110,18 +125,8 @@ $RERUN bintray:package-upload \
     --file $RPM
 
 
-# Build a rundeck plugin
-#------------------------
-$RERUN rundeck-plugin:remote-node-steps --name $MODULE --modules $MODULE --version ${VERSION}
-ZIP=./build/${MODULE}.zip
-[ ! -f $ZIP ] && {
-    echo >&2 "ERROR: $ZIP file was not created."
-    files=( *.zip )
-    echo >&2 "ERROR: ${#files[*]} files matching .zip: ${files[*]}"
-    exit 1
-}
 
-echo "Uploading zip package $ZIP to bintray: /rundeck-plugins/rerun-$MODULE ..."
+echo "Uploading zip package $ZIP to bintray: /rundeck-plugins/rerun-remote-node-steps ..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org rundeck-plugins   --repo rerun-remote-node-steps \
