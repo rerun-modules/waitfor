@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+#/ command: waitfor:file-size: "wait until file is size"
+#/ usage: rerun waitfor:file-size  --file <>  --interval <30>  --maxtry <10>  --bytes <> 
+#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
+#/ option-variables: FILE INTERVAL MAXTRY BYTES
+
+. $RERUN_MODULE_DIR/lib/functions.sh file-size || { 
+  echo >&2 "Failed loading function library." ; exit 1 ; 
+}
+
+set -o errexit -o nounset -o pipefail
+
+rerun_options_parse "$@"
+
+# Command implementation
+# ----------------------
+
+[[ "${BYTES}" =~ ^[0-9]+$ ]] || {
+	rerun_die 2 "Bytes must be an integer value"
+}
+
+declare -i count=0 max=$MAXTRY sleep=$INTERVAL size=0
+
+# Keep checking for pattern until we reach max.
+while (( count <= max ))
+do
+	size=$(wc -c < "$FILE")
+
+    if (( size < BYTES ))
+    then  
+        # output a progress character.
+        progress_tic "."; 
+    else  
+        # Success. File is specified size or greater.
+        break; 
+    fi
+    # increment attempts counter.
+    (( count += 1 ))
+
+    # error out if reached max attempts.
+    (( count == max )) && {
+        rerun_log warn "Reached max attempts to check $BYTES bytes in $FILE (bytes: $size). Exiting."
+        exit 3
+    }
+    # wait interval before trying again.
+    sleep "$sleep"
+done
+
+
+# Done. Exit with last command exit status.
+exit $?
+
