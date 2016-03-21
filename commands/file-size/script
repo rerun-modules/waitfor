@@ -29,7 +29,7 @@ do
 
     if (( size < BYTES ))
     then  
-        # output a progress character.
+        # output a progress string.
         progress_tic "."; 
     else  
         # Success. File is specified size or greater.
