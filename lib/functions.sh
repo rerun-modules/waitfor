@@ -25,10 +25,12 @@ fi
 # - - -
 
 
-
 progress_tic() {
     tic=$1
-    printf "$tic"
+    if [[ -t 1 ]]
+    then  printf -- "%s" "$tic" 
+    else  printf -- "%s\n" "$tic"
+    fi
 }
 
 function show_progress {

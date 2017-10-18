@@ -3,4 +3,4 @@
 # Thu Jul  9 21:39:00 PDT 2015
 NAME=dir-exists
 DESCRIPTION="wait for the directory to exist"
-OPTIONS="interval maxtry dir"
+OPTIONS="dir interval maxtry"
