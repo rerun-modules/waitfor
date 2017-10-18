@@ -1,15 +1,35 @@
-lang: c
-env:
-  global:
-    secure: P1tohkXL6v/rXiJkjF3srKRB00t1YDHc/+UDNSrui3h+KdmVmFpMiYOd/uSNKLeMnTcvCt1ET4yxOQSh/sX6KZDvZQDC1K/+42NZPLvC65TJ5rOjM1++dRXh3NYEU83ShvbaaPTfAJuKdNcbEtxY9jysyOQ8OmfBryChzOAoka0=
-script: "./travis-ci.sh"
+dist: trusty
+sudo: false
+language: c
+compiler: gcc
+if: tag IS blank
+script: /usr/lib/x86_64-linux-gnu/rerun/travis-ci-modules.sh
 notifications:
   irc:
   - irc.freenode.org#rerun
-before_install:
-- sudo apt-get update -qq
-- sudo apt-get install -qq markdown
-- sudo apt-get install -qq build-essential
-- sudo apt-get install -qq devscripts
-- sudo apt-get install -qq dh-make
-- sudo apt-get install -qq rpm
+addons:
+  apt:
+    packages:
+    - markdown
+    - fakeroot
+    - build-essential
+    - devscripts
+    - autoconf
+    - automake
+    - dh-make
+    - libfile-fcntllock-perl
+    - rpm
+    - xmlstarlet
+    - jq
+    - wget
+    - zip
+    - rerun
+    - rerun-bintray
+    sources:
+    - sourceline: deb https://dl.bintray.com/rerun/rerun-deb /
+env:
+  global:
+  - BINTRAY_USER=ahonor
+  - BINTRAY_ORG=rerun
+  - secure: P1tohkXL6v/rXiJkjF3srKRB00t1YDHc/+UDNSrui3h+KdmVmFpMiYOd/uSNKLeMnTcvCt1ET4yxOQSh/sX6KZDvZQDC1K/+42NZPLvC65TJ5rOjM1++dRXh3NYEU83ShvbaaPTfAJuKdNcbEtxY9jysyOQ8OmfBryChzOAoka0=
+  - secure: AvUQ26OMjKHK+KlC/2mdiTv62kvMfXgjHEW0fNLBDNbpQLvXiQytlhQ84LjPH1jGrs2RfjQ2g20btiqoSVWXoFQiq556CvrEI3muObES7rI6nkQJi3r+7/RfoNQ7SGPSMqDaViL7AVuT8ZexV+ADs2UhEruOMERJw8KSRkGkMGY=
