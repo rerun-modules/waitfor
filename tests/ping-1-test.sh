@@ -13,7 +13,7 @@ describe "ping"
 
 
 it_reaches_localhost() {
-    rerun waitfor:ping --host localhost
+    timeout 10 rerun waitfor:ping --host 127.0.0.1
 }
 
 
