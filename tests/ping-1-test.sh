@@ -12,8 +12,12 @@
 describe "ping"
 
 
+# TODO: when ping no longer requires SUID, turn on for travis
 it_reaches_localhost() {
-    timeout 10 rerun waitfor:ping --host 127.0.0.1
+    # believe it or not, you can't run ping on travis when in a docker image
+    # https://github.com/travis-ci/travis-ci/issues/3080
+    [[ -z "${TRAVIS_BUILD_NUMBER:-}" ]] && return 0
+    timeout 10 rerun waitfor:ping --host localhost
 }
 
 
