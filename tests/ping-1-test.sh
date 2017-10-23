@@ -16,7 +16,7 @@ describe "ping"
 it_reaches_localhost() {
     # believe it or not, you can't run ping on travis when in a docker image
     # https://github.com/travis-ci/travis-ci/issues/3080
-    [[ -z "${TRAVIS_BUILD_NUMBER:-}" ]] && return 0
+    [[ -n "${TRAVIS_BUILD_NUMBER:-}" ]] && return 0
     timeout 10 rerun waitfor:ping --host localhost
 }
 
