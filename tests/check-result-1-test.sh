@@ -15,7 +15,7 @@ it_succeeds_immediately_if_check_is_correct() {
     timeout 1 rerun waitfor:check-result --check "echo Its OK" --result "Its OK"
 }
 
-it_succeeds_immediately_if_check_is_another_result_negative() {
+it_succeeds_immediately_if_check_is_not_correct() {
     timeout 1 rerun waitfor:check-result --check "echo Its OK" --result "Not is OK" --negative "True"
 }
 
@@ -41,34 +41,65 @@ it_fail_if_check_return_the_same_value_negative() {
  
 }
 
-it_succeeds_after_5s_when_the_check_is_like_the_expected() {
-    FILE=/tmp/it_succeeds_after_5s_when_the_check_is_like_the_expected.$$
-    echo 0 > ${FILE}
-    ( sleep 5 && echo 1 > $FILE ) &
+it_succeeds_after_5s_when_check_is_expected() {
+    FILE=/tmp/it_succeeds_after_5s_when_check_is_expected.$$
+    echo 0 > "${FILE}"
+    ( sleep 5 && echo 1 > "${FILE}" ) &
 
-    if ! timeout 5 rerun waitfor:check-result --check "cat ${FILE}" --result "1" --interval 5
+    if timeout 8 rerun waitfor:check-result --check "cat ${FILE}" --result "1" --interval 2
     then
-    	echo >&2 "TEST: properly failed. exit code $?"
+        echo >&2 "TEST: properly succeeded."
     else
-    	echo >&2 "TEST: Should have failed."
-    	rm -f $FILE
-    	exit 1
+        echo >&2 "TEST: Failed. exit code $?"
+        rm -f $FILE
+        exit 1
     fi
     rm -f $FILE
 }
 
-it_succeeds_after_5s_when_the_check_is_different_than__the_expected_negative() {
-    FILE=/tmp/it_succeeds_after_5s_when_the_check_is_like_the_expected.$$
-    echo 0 > ${FILE}
-    ( sleep 5 && echo 1 > $FILE ) &
+it_fails_after_6s_when_check_is_expected() {
+    FILE=/tmp/it_fails_after_6s_when_check_is_expected.$$
+    echo 0 > "${FILE}"
+    ( sleep 5 && echo 1 > "${FILE}" ) &
 
-    if ! timeout 5 rerun waitfor:check-result --check "cat ${FILE}" --result "0" --interval 5 --negative "True"
+    if ! timeout 6 rerun waitfor:check-result --check "cat ${FILE}" --result "2" --interval 1
     then
-    	echo >&2 "TEST: properly failed. exit code $?"
+        echo >&2 "TEST: properly failed. exit code $?"
     else
-    	echo >&2 "TEST: Should have failed."
-    	rm -f $FILE
-    	exit 1
+        echo >&2 "TEST: Should have failed."
+        rm -f $FILE
+        exit 1
     fi
     rm -f $FILE
+}
+
+it_fails_after_2s_when_check_is_same_negative() {
+    FILE=/tmp/it_fails_after_2s_when_check_is_same_negative.$$
+    echo 0 > "${FILE}"
+
+    if ! timeout 2 rerun waitfor:check-result --check "cat ${FILE}" --result "0" --interval 1 --negative "True"
+    then
+        echo >&2 "TEST: properly failed. exit code $?"
+    else
+        echo >&2 "TEST: Should have failed."
+        rm -f "${FILE}"
+        exit 1
+    fi
+    rm -f "${FILE}"
+}
+
+it_succeeds_after_5s_when_check_is_different() {
+    FILE=/tmp/it_succeeds_after_5s_when_check_is_different.$$
+    echo 0 > "${FILE}"
+    ( sleep 5 && echo 1 > "${FILE}" ) &
+
+    if timeout 8 rerun waitfor:check-result --check "cat ${FILE}" --result "0" --interval 2 --negative "True"
+    then
+        echo >&2 "TEST: properly succeeded."
+    else
+        echo >&2 "TEST: Failed. exit code $?"
+        rm -f $FILE
+        exit 1
+    fi
+    rm -f "${FILE}"
 }

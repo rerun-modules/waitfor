@@ -9,13 +9,14 @@
 # and show its options.
 # 
 #/ command: waitfor:check-result: "wait for the check return the result"
-#/ usage: rerun waitfor:check-result  --interval <30>  --maxtry <10>  --check <>  --result <> [ --negative <false>] 
+#/ usage: rerun waitfor:check-result  --interval <30>  --maxtry <10>  --check <>  --result <>  --negative <false> 
 
 # Load common functions
 # ---------------------
 
 # Load the function library for this module.
 # This loads rerun functions, too.
+# shellcheck source=lib/functions.sh
 . $RERUN_MODULE_DIR/lib/functions.sh check-result || { 
   echo >&2 "Failed loading function library." ; exit 1 ; 
 }
@@ -61,19 +62,20 @@ rerun_options_parse "$@"
 # - - -
 # Put the command implementation here.
 # - - -
-[ "${NEGATIVE,,}" = "true" ] && NEGATIVE=true || NEGATIVE=false
+NEGATIVE=$(echo "${NEGATIVE}" | tr '[:upper:]' '[:lower:]')
+[[ "${NEGATIVE}" = "true" ]] || NEGATIVE=false
 declare -i count=0 max=${MAXTRY} sleep=${INTERVAL}
 
 # Keep checking for pattern until we reach max.
 while (( count <= max ))
 do
     # if success break else print a . and do another loop
-    result_check=`eval ${CHECK}`
-    if [ ${NEGATIVE} == "false" ]
+    result_check=$(eval "${CHECK}")
+    if [[ "${NEGATIVE}" == "false" ]]
     then
-        [ "${result_check}" == "${RESULT}" ] && break || printf >&2 "."
+        [[ "${result_check}" == "${RESULT}" ]] && break || printf >&2 "."
     else
-        [ "${result_check}" == "${RESULT}" ] && printf >&2 "." || break
+        [[ "${result_check}" != "${RESULT}" ]] && break || printf >&2 "."
     fi
     # increment attempts counter.
     (( count += 1 ))

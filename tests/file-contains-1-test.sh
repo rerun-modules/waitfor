@@ -11,19 +11,19 @@
 # --------
 describe "file-contains"
 
-it_succeeds_immediately_if_string_already_present() {
+it_succeeds_immediately_if_string_present() {
     FILE=$(mktemp "/tmp/it_succeeds_immiedately_when_file_already_present.XXXX")
-    echo "FOO" > $FILE
+    echo "FOO" > "${FILE}"
     timeout 1 rerun waitfor:file-contains --file "$FILE" --string FOO
 
-    rm $FILE
+    rm "${FILE}"
 }
 it_waits_until_string_present() {
     FILE=$(mktemp "/tmp/it_waits_until_string_present.XXXX")
-    (sleep 5 && echo "FOO" > $FILE) &
+    (sleep 5 && echo "FOO" > "${FILE}") &
     timeout 6 rerun waitfor:file-contains --file "$FILE" --string FOO --interval 5
 
-    rm $FILE
+    rm "${FILE}"
 }
 
 it_fails_when_maxtry_exceeded() {
@@ -32,5 +32,5 @@ it_fails_when_maxtry_exceeded() {
     ! timeout 6 rerun waitfor:file-contains --file "$FILE" --string FOO --interval 5 --maxtry 1
 
 	! timeout 6 rerun waitfor:file-contains --file "$FILE" --string FOO --interval 1 --maxtry 3
-    rm $FILE
+    rm "${FILE}"
 }
