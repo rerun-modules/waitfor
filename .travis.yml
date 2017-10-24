@@ -30,7 +30,7 @@ addons:
     - sourceline: deb https://dl.bintray.com/rerun/rerun-deb /
 env:
   global:
-  - BINTRAY_USER=ahonor
+  - BINTRAY_USER=starlee
   - BINTRAY_ORG=rerun
-  - secure: P1tohkXL6v/rXiJkjF3srKRB00t1YDHc/+UDNSrui3h+KdmVmFpMiYOd/uSNKLeMnTcvCt1ET4yxOQSh/sX6KZDvZQDC1K/+42NZPLvC65TJ5rOjM1++dRXh3NYEU83ShvbaaPTfAJuKdNcbEtxY9jysyOQ8OmfBryChzOAoka0=
+  - secure: j3vBOxOpscBzyU4KVgGGgwOdVpQu7XKVNRJRNipsVQL4LULdjz8lKVVpuMCBniZ++9BwFt+2PWYfWw5cVxWBcoe5Qf/3IJ4ruOPtcvjrGhN31Cdp/+ST4cLb4VdgU2YXzHlmyFqChblST9nP6EKALG9XOLoSl32QNUJltKMZU2w=
   - secure: AvUQ26OMjKHK+KlC/2mdiTv62kvMfXgjHEW0fNLBDNbpQLvXiQytlhQ84LjPH1jGrs2RfjQ2g20btiqoSVWXoFQiq556CvrEI3muObES7rI6nkQJi3r+7/RfoNQ7SGPSMqDaViL7AVuT8ZexV+ADs2UhEruOMERJw8KSRkGkMGY=
