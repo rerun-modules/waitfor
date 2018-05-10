@@ -19,7 +19,7 @@ it_succeeds_immediately_if_check_is_not_correct() {
     timeout 1 rerun waitfor:check-result --check "echo Its OK" --result "Not is OK" --negative "True"
 }
 
-it_fail_if_check_return_other_value() {
+it_fails_if_check_return_other_value() {
     if ! timeout 5 rerun waitfor:check-result --check "echo Not is OK" --result "Its OK" --interval 1 
     then
        echo >&2 "TEST: properly failed. exit code $?"
@@ -30,7 +30,7 @@ it_fail_if_check_return_other_value() {
  
 }
 
-it_fail_if_check_return_the_same_value_negative() {
+it_fails_if_check_return_the_same_value_negative() {
     if ! timeout 5 rerun waitfor:check-result --check "echo Its OK" --result "Its OK" --interval 1 --negative "True"
     then
        echo >&2 "TEST: properly failed. exit code $?"
