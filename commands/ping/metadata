@@ -3,4 +3,4 @@
 # Fri Nov 21 08:12:35 PST 2014
 NAME=ping
 DESCRIPTION="wait for ping response from host"
-OPTIONS="host interval"
+OPTIONS="host interval maxtry"

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 #/ command: waitfor:ping: "wait for ping response from host"
-#/ usage: rerun waitfor:ping  --host <""> [ --interval <30>] 
+#/ usage: rerun waitfor:ping  --host <"">  --interval <30> [ --maxtry <>]
 #/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
-#/ option-variables: HOST INTERVAL
+#/ option-variables: HOST INTERVAL MAXTRY
 
-. $RERUN_MODULE_DIR/lib/functions.sh ping || { 
+. "$RERUN_MODULE_DIR/lib/functions.sh" ping || {
   echo >&2 "Failed loading function library." ; exit 1 ; 
 }
 
@@ -17,10 +17,17 @@ rerun_options_parse "$@"
 # Command implementation
 # ----------------------
 
-until ( ping -c 1 $HOST | grep -q ^64 )
+declare -i attempts=0
+
+until ( ping -c 1 "$HOST" | grep -q ^64 )
 do
-   sleep $INTERVAL
+   sleep "$INTERVAL"
    progress_tic .
+   (( attempts += 1 ))  ; # increment counter for the failed attempt.
+   (( attempts == MAXTRY )) && {
+        printf >&2 "\nReached max tries: %s. Could not ping host %s. Exiting.\n" "$attempts" "$HOST"
+        exit 1
+   }
 done
 
 echo "OK: $HOST is pingable."
